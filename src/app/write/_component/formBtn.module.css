@@ -1,0 +1,51 @@
+.buttonContainer {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.btn {
+  height: 40px;
+  width: 60px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: Malgun Gothic;
+}
+
+.cancel {
+  background-color: #edf2f7;
+}
+.cancel:hover {
+  background-color: #e2e8f0;
+}
+
+.register {
+  background-color: #38a169;
+  color: white;
+}
+.register:hover {
+  background-color: #2f855a;
+}
+
+.input {
+  margin-top: 20px;
+  font-size: 18px;
+  height: 50px;
+  border: 1.5px solid lightgray;
+  border-radius: 16px;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.input::placeholder {
+  color: rgb(196, 185, 208);
+}
+
+.input:focus-visible {
+  outline: none;
+}

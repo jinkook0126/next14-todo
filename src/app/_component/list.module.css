@@ -98,4 +98,9 @@
   align-items: center;
   border-radius: 40px;
   cursor: pointer;
+  padding: 6px;
+}
+
+.removeBtn:hover {
+  background-color: #ffe3e3;
 }

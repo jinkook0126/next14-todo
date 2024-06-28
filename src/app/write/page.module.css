@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.card {
+  width: 600px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.title {
+  font-size: 40px;
+  color: lightblue;
+  font-weight: 600;
+  font-family: Malgun Gothic;
+}
