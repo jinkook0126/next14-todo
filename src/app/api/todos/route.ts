@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
   const res = await prisma.todos.create({
     data: { contents },
   });
-  console.log(res);
   return NextResponse.json({
     success: true,
     row: { id: Number(res.id), contents: res.contents, done: res.done },
