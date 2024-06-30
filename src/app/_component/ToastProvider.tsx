@@ -14,6 +14,8 @@ export const useToast = () => {
   return {
     showToast: (message: string, options?: ToastOptions) =>
       toast(message, options),
+    errorToast: (message: string, options?: ToastOptions) =>
+      toast.error(message, options),
   };
 };
 

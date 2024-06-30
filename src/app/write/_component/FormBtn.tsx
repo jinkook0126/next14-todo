@@ -3,31 +3,44 @@
 import Link from "next/link";
 import styles from "./formBtn.module.css";
 import cx from "classnames";
-import useTodoStore from "@/store/useTodoStore";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/app/_component/ToastProvider";
 
 const FormBtn = () => {
   const router = useRouter();
-  const [content, setContent] = useState("");
-  const { register } = useTodoStore();
-  const { showToast } = useToast();
+  const [contents, setContents] = useState("");
+  const { showToast, errorToast } = useToast();
 
   const onRegister: FormEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
-    register(content);
-    showToast("등록되었습니다.");
-    router.back();
+    fetch("http://localhost:3000/api/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          showToast("등록되었습니다.");
+          router.back();
+          return;
+        }
+        errorToast("등록에 실패하였습니다.");
+      });
   };
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setContent(e.target.value);
+    setContents(e.target.value);
   };
   return (
     <div>
       <form onSubmit={onRegister}>
         <input
-          value={content}
+          value={contents}
           onChange={onChange}
           className={styles.input}
           type="text"
