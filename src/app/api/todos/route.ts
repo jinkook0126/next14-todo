@@ -14,11 +14,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { contents } = body;
-  await prisma.todos.create({
+  const res = await prisma.todos.create({
     data: { contents },
   });
-
-  return NextResponse.json({ success: true });
+  console.log(res);
+  return NextResponse.json({
+    success: true,
+    row: { id: Number(res.id), contents: res.contents, done: res.done },
+  });
 }
 
 export async function PUT(request: NextRequest) {

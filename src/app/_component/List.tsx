@@ -1,70 +1,74 @@
 "use client";
 import styles from "@/app/_component/list.module.css";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useToast } from "@/app/_component/ToastProvider";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ITodos } from "@/model/todo";
 
-interface ITodos {
-  id: number;
-  contents: string;
-  done: boolean;
+async function fetchTodos() {
+  const res = await fetch("/api/todos");
+  const data = await res.json();
+  if (data.success) {
+    return data.list;
+  }
+  return [];
 }
-
+async function updateTodos({ id, stat }: { id: number; stat: boolean }) {
+  await fetch(`/api/todos`, {
+    method: "PUT",
+    body: JSON.stringify({
+      id,
+      done: stat,
+    }),
+  });
+}
+async function removeTodos({ id }: { id: number }) {
+  await fetch(`/api/todos?id=${id}`, {
+    method: "DELETE",
+  });
+}
 const List = () => {
-  const [lists, setLists] = useState<ITodos[]>([]);
   const { showToast, errorToast } = useToast();
-
+  const queryClient = useQueryClient();
+  const { data: lists } = useQuery<ITodos[]>({
+    queryKey: ["todos"],
+    queryFn: fetchTodos,
+    staleTime: 1000 * 20,
+  });
+  const { mutate: removeMutation } = useMutation({
+    mutationFn: removeTodos,
+    onSuccess(res, params) {
+      const { id } = params;
+      queryClient.setQueryData(["todos"], (old: ITodos[]) =>
+        old.filter((todo) => todo.id !== id)
+      );
+      showToast("삭제되었습니다.");
+    },
+    onError() {
+      errorToast("삭제에 실패하였습니다.");
+    },
+  });
+  const { mutate: updateMutation } = useMutation({
+    mutationFn: updateTodos,
+    onSuccess(res, params) {
+      const { id, stat } = params;
+      queryClient.setQueryData(["todos"], (old: ITodos[]) =>
+        old.map((todo) => {
+          if (todo.id !== id) return todo;
+          return { ...todo, done: stat };
+        })
+      );
+    },
+  });
   const onRemove = async (id: number) => {
-    // remove(idx);
-    fetch(`/api/todos?id=${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          showToast("삭제되었습니다.");
-          setLists((prev) => prev.filter((todo) => todo.id !== id));
-          return;
-        }
-        errorToast("삭제에 실패하였습니다.");
-      });
+    removeMutation({ id });
   };
   const onChange = (id: number, stat: boolean) => {
-    // update(idx, stat);
-    fetch(`/api/todos`, {
-      method: "PUT",
-      body: JSON.stringify({
-        id,
-        done: stat,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setLists((prev) =>
-            prev.map((todo) => {
-              if (todo.id !== id) return todo;
-              return { ...todo, done: stat };
-            })
-          );
-        }
-      });
+    updateMutation({ id, stat });
   };
-  useEffect(() => {
-    fetch("/api/todos", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data.success) {
-          setLists(data.list);
-        }
-      });
-  }, []);
   return (
     <ul className={styles.listContainer}>
-      {lists.map((todo) => (
+      {lists?.map((todo) => (
         <li className={styles.listItem} key={todo.id}>
           <div className={styles.listItemContainer}>
             <div className={styles.checkboxContainer}>

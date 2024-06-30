@@ -6,8 +6,11 @@ import cx from "classnames";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/app/_component/ToastProvider";
+import { useQueryClient } from "@tanstack/react-query";
+import { ITodos } from "@/model/todo";
 
 const FormBtn = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [contents, setContents] = useState("");
   const { showToast, errorToast } = useToast();
@@ -27,6 +30,10 @@ const FormBtn = () => {
       .then((data) => {
         if (data.success) {
           showToast("등록되었습니다.");
+          queryClient.setQueryData(["todos"], (old: ITodos[]) => [
+            ...old,
+            data.row,
+          ]);
           router.back();
           return;
         }
