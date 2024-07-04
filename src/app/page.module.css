@@ -27,6 +27,20 @@
   font-family: Malgun Gothic;
 }
 
+.hello {
+  font-size: 30px;
+  color: rgb(33, 32, 34);
+  font-weight: 300;
+  font-family: Malgun Gothic;
+}
+
+.btncontainer {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: center;
+}
+
 .writeBtn {
   width: 40px;
   aspect-ratio: 1;

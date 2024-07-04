@@ -4,6 +4,7 @@ import "./globals.css";
 import ToastProvider from "./_component/ToastProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import RQProvider from "../utils/RQProvider";
+import AuthSession from "./_component/AuthSession";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,8 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <RQProvider>
-          <ToastProvider>{children}</ToastProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          <AuthSession>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthSession>
         </RQProvider>
       </body>
     </html>

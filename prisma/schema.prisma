@@ -15,4 +15,5 @@ model Todos {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   contents  String?  @default("")
   done      Boolean? @default(false)
+  email     String?
 }
